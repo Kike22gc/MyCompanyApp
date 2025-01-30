@@ -1,28 +1,60 @@
 <template>
-    <div>
-        <v-dialog v-model="dialog" persistent scrollable max-width="50%">
-            <v-card>
-                <v-toolbar dense>
-                    <v-icon x-large>mdi-account</v-icon>
-                    <v-toolbar-title class="ml-4">XXXXXXXXXX</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-btn icon @click="cancel()" class="btn-close"
-                        ><v-icon>mdi-close</v-icon></v-btn
-                    >
-                </v-toolbar>
-                <div>
-                    <div class="d-none d-sm-flex">  <!--EDIT PROFILE DESKTOP-->
-                        <v-card-text>   
-                            <v-row >
-                                <v-col cols="5" class="mt-4">
-                                    <v-card height="300px" width="300px" fluid ma-auto>
-                                        <span v-if="image_url === null" align-center justify-center>
-                                            <h3>Para una correcta visualización, se recomienda una resolucion de: <br> 
-                                                Alto: 300px <br> 
-                                                Ancho: 300px <br> 
-                                                o una escala proporcional</h3>
-                                        </span>
-                                        <v-img v-if="image_url !== null" :src="image_url" max-height="300px" max-width="300px"></v-img>
+    <v-app>
+        <div>
+            <div>
+                <v-dialog v-model="dialog" persistent scrollable max-width="80%">
+                    <v-card>
+                        <v-toolbar dense>
+                            <img src="https://randomuser.me/api/portraits/women/64.jpg" width="40px" height="40px">
+                            <v-toolbar-title class="ml-4">{{ profile.getUserName }} {{ profile.getUserSubName }} </v-toolbar-title>
+                            
+                            <v-spacer></v-spacer>
+                            <v-icon>edit</v-icon>
+                            <v-btn icon @click="cancel()" class="btn-close"><v-icon>mdi-close</v-icon></v-btn>
+                        </v-toolbar>
+
+                        <div class="d-none d-sm-flex">
+                            <v-card-text>
+                                <v-row class="mt-4">
+                                    <v-col cols="4">
+                                        <v-card height="auto" width="100%" fluid>
+                                            <v-img v-if="image_url === null" src="images/no-profile-picture-icon.svg" width="380px" height="auto" align-center justify-center>
+                                            </v-img>
+                                            <v-img v-if="image_url !== null" :src="image_url" max-height="500px" max-width="380px"></v-img>
+                                        </v-card>
+                                        <v-file-input 
+                                            type="file" id="file" ref="file" v-on:change="handleFileUpload()"
+                                            style="display: none"
+                                            v-model="image_name"
+                                        >
+                                        </v-file-input>
+                                        <v-row class="mt-3">
+                                            <v-spacer></v-spacer>
+                                            <v-btn v-if="image_url === null" class="primary" @click="seleccionaImagen()">SUBIR IMAGEN</v-btn>
+                                            <v-btn v-if="image_url !== null" class="secondary" @click="borraImagen()">ELIMINAR IMAGEN</v-btn>
+                                            <v-spacer></v-spacer>
+                                        </v-row>
+                                    </v-col>
+                                    <v-col cols="2"></v-col>
+                                    <v-col cols="6"></v-col>
+                                </v-row>
+                            </v-card-text>
+                        </div>
+                        <div class="d-flex d-sm-none">
+                            <v-card-text>
+                                <v-row class="mt-1">
+                                    <v-card height="300px" width="100%">
+                                        <v-img v-if="image_url === null" 
+                                            src="images/no-profile-picture-icon.svg" 
+                                            width="100%" 
+                                            height="100%" 
+                                            align-center justify-center>
+                                        </v-img>
+                                        <v-img v-if="image_url !== null" 
+                                            :src="image_url" 
+                                            max-height="auto" 
+                                            max-width="200px">
+                                        </v-img>
                                     </v-card>
                                     <v-file-input 
                                         type="file" id="file" ref="file" v-on:change="handleFileUpload()"
@@ -30,143 +62,27 @@
                                         v-model="image_name"
                                     >
                                     </v-file-input>
-                                    <v-row class="mt-3">
-                                        <v-spacer></v-spacer>
-                                        <v-btn class="primary" @click="seleccionaImagen()">SUBIR</v-btn>
-                                        <v-spacer></v-spacer>
-                                        <v-btn class="error" @click="borraImagen()">ELIMINAR</v-btn>
-                                        <v-spacer></v-spacer>
+                                </v-row>
+                                <v-row class="mt-5">
+                                    <v-spacer></v-spacer>
+                                    <v-btn v-if="image_url === null" class="primary" @click="seleccionaImagen()">SUBIR IMAGEN</v-btn>
+                                    <v-btn v-if="image_url !== null" class="secondary" @click="borraImagen()">ELIMINAR IMAGEN</v-btn>
+                                    <v-spacer></v-spacer>
                                     </v-row>
-                                </v-col>
+                            </v-card-text>
+                        </div>
 
-                                <v-col cols="1"></v-col>
-
-                                <v-col cols="6">
-                                    <v-card-text>
-                                        <v-form v-model="var_form">
-                                            <v-row>
-                                                <v-col cols="6">
-                                                    <v-text-field
-                                                        name="name"
-                                                        label="Nombre"
-                                                        type="text"
-                                                        v-model="var_name"
-                                                    ></v-text-field>
-                                                </v-col>
-                                                <v-col cols="6">
-                                                    <v-text-field
-                                                        name="surname"
-                                                        label="Apellidos"
-                                                        type="text"
-                                                        v-model="var_apellidos"
-                                                    ></v-text-field>
-                                                </v-col>
-                                            </v-row>
-                                            <v-row>
-                                                <v-col cols="6">
-                                                    <v-text-field
-                                                        name="alias"
-                                                        label="Alias"
-                                                        type="text"
-                                                        v-model="var_alias"
-                                                    ></v-text-field>
-                                                </v-col>
-                                                <v-col cols="6">
-                                                    <v-menu
-                                                        v-model="dateMenu"
-                                                        :close-on-content-click="false"
-                                                        :nudge-right="40"
-                                                        transition="scale-transition"
-                                                        offset-y
-                                                        min-width="290px"
-                                                        max-width="290px"
-                                                    >
-                                                        <template v-slot:activator="{on}">
-                                                        <v-text-field
-                                                            prepend-inner-icon="event"
-                                                            readonly
-                                                            hide-details
-                                                            label="Fecha de Nacimiento"
-                                                            :value="var_fecha"
-                                                            v-on="on"
-                                                        ></v-text-field>
-                                                        </template>
-                                                        <v-date-picker
-                                                            locale="es-ES"
-                                                            :first-day-of-week="1"
-                                                            v-model="dateValue"
-                                                            no-title
-                                                            @input="dateMenu = false"
-                                                        ></v-date-picker>
-                                                    </v-menu>
-                                                </v-col>
-                                            </v-row>
-                                            <v-row>
-                                                <v-col cols="6">
-                                                    <v-text-field
-                                                        prepend-inner-icon="accessibility"
-                                                        name="altura"
-                                                        label="Altura"
-                                                        type="number"
-                                                        v-model="var_altura"
-                                                    ></v-text-field>
-                                                </v-col>
-                                                <v-col>
-                                                    <v-text-field
-                                                        prepend-inner-icon="scale"
-                                                        name="Peso"
-                                                        label="Peso"
-                                                        type="number"
-                                                        v-model="var_peso"
-                                                    ></v-text-field>
-                                                </v-col>
-                                            </v-row>
-                                            <v-row>
-                                                <v-col cols="4">
-                                                    <v-text-field
-                                                        prepend-inner-icon="looks_one"
-                                                        name="dorsal"
-                                                        label="Dorsal"
-                                                        type="number"
-                                                        v-model="var_dorsal"
-                                                    ></v-text-field>
-                                                </v-col>
-                                                <v-col>
-                                                    <v-select
-                                                        style="font-size:1.5em"
-                                                        label="Posicion"
-                                                        v-model="var_posicion"
-                                                        :items="PosicionList"
-                                                        item-text="Posicion"
-                                                        item-value="Posicion"
-                                                    ></v-select>
-                                                </v-col>
-                                            </v-row>
-                                            <v-row>
-                                                
-                                            </v-row>
-                                        </v-form>
-                                    </v-card-text>
-                                    <v-card-actions>
-                                        <v-spacer></v-spacer>
-                                        <v-btn :disabled="!var_form" class="primary ma-2" @click="createJugador()">Guardar</v-btn>
-                                    </v-card-actions>
-                                </v-col>
-                            </v-row>
-                        </v-card-text>
-                    </div>
-                </div>
-
-                
-            </v-card>
-        </v-dialog>
-    </div>
+                    </v-card>
+                </v-dialog>
+            </div>
+        </div>
+    </v-app>
 </template>
 
 <script>
 import axios from "axios";
 export default {
-    props: ["dialog"],
+    props: ["dialog", "profile"],
     name: "NuevoJugador",
 
     data() {
@@ -175,39 +91,11 @@ export default {
             image_name: null,
             file: null,
 
-            var_form: false,
-            var_name: null,
-            var_apellidos: null,
-            var_alias: null,
-            var_altura: null,
-            var_peso: null,
-            var_dorsal: null,
-            var_fecha: null,
-            var_posicion: null,
-            var_team_active : this.$store.getters.getTeamActive,
-            var_ruta_imagen: null,
-
             dateMenu: false,
             dateValue: null,
 
-            PosicionList: [
-                {
-                "ID": "1",
-                "Posicion": "Portero",
-                },
-                {
-                "ID": "2",
-                "Posicion": "Defensa",
-                },
-                {
-                "ID": "3",
-                "Posicion": "Centrocampista",
-                },
-                {
-                "ID": "4",
-                "Posicion": "Delantero",
-                },
-            ],
+            vForm: false,
+            var_ruta_imagen: null,            
         };
     },
 
@@ -228,7 +116,7 @@ export default {
 
     methods: {
         initialize: function () {
-            this.var_team_active = this.$store.getters.getTeamActive;
+            console.log(this.profile)
         }, 
 
         seleccionaImagen() {

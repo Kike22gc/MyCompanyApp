@@ -16,7 +16,7 @@
                         <v-flex xs12 sm5> <!--FORMULARIO-->
                            <v-row class="d-flex center pa-md-2 mx-lg-auto">
                               <v-col cols="6">
-                                 <v-btn text block depressed @click="vShow='Login'">INICIAR SESIÓN</v-btn>
+                                 <v-btn text block @click="vShow='Login'">INICIAR SESIÓN</v-btn>
                               </v-col>
                               <v-col cols="6">
                                  <v-btn text block @click="vShow='SignUp'">REGISTRARSE</v-btn>
@@ -26,23 +26,19 @@
                               <v-col cols="11">
                                  <v-form v-model="vForm">
                                     <v-text-field
+                                       v-for="item in items"
                                        v-if="vShow != 'Login'"
-                                       prepend-icon="person"
-                                       name="name"
-                                       label="Nombre Completo"
-                                       type="text"
-                                       v-model="vName"
-                                       :rules="[rules.required]"
-                                    ></v-text-field>
-                                    <v-text-field
-                                       v-if="vShow != 'Login'"
-                                       prepend-icon="apartment"
-                                       name="name_company"
-                                       label="Nombre Empresa"
-                                       type="text"
-                                       v-model="vCompany"
-                                       :rules="[rules.required]"
-                                    ></v-text-field>
+                                       :key="item.name"
+                                       :v-model="item.model"
+                                       :name="item.name"
+                                       :label="item.name"
+                                       :type="item.type"
+                                       :prepend-icon="item.prependIcon"
+                                       :append-icon="item.appendIcon"
+                                       :rules="rulesRequired"
+                                    >
+                                    </v-text-field>
+
                                     <v-text-field
                                        prepend-icon="alternate_email"
                                        name="email"
@@ -51,6 +47,7 @@
                                        v-model="vEmail"
                                        :rules="[rules.required, rules.email]"
                                     ></v-text-field>
+
                                     <v-text-field
                                        prepend-icon="lock"
                                        :append-icon="vpass_visible ? 'mdi-eye' : 'mdi-eye-off'"
@@ -71,7 +68,7 @@
                                        v-model="vPassConfirm"
                                        :rules="[rules.required, rules.confirm]"
                                     ></v-text-field>
-
+                                    
                                     <v-card-actions>
                                        <v-spacer></v-spacer>
                                        <v-btn v-if="vShow == 'Login'" color="primary" :disabled= !vForm @click="login()">Iniciar Sesion </v-btn>
@@ -101,14 +98,23 @@ export default {
          vShow: 'Login',
          
          vForm: null,
+
+         items: [
+                { model: 'vName',         name: 'Nombre',      label:'Nombre',      type: 'text',  prependIcon: 'person', },
+                { model: 'vApellidos',    name: 'Apellidos',   label:'Apellidos',   type: 'text',  prependIcon: 'person',  },
+                { model: 'vCompany',      name: 'Empresa',     label:'Empresa',     type: 'text',  prependIcon: 'apartment', },
+              ],
          
          vName: null,
+         vApellidos: null,
          vCompany: null,
          vEmail: 'a@a.es',
          vPass: 'A',
          vPassConfirm: null,   
-         vpass_visible: false,      
+         vpass_visible: false,     
          
+         rulesRequired: [(v) => !!v || "Campo requerido"],
+            
          rules: {
             required: (value) => !!value || "Campo requerido.",
             email: (value) => {
@@ -118,6 +124,7 @@ export default {
             },
             confirm: (value) => value == this.vPass || "Las contraseñas no coinciden.",
          },
+         
       }
    },
 
@@ -148,8 +155,10 @@ export default {
         
       signUp: function ()
         {
+            console.log(this.vApellidos);
             let credenciales = {
-                username: this.vName,
+                name: this.vName,
+                subname: this.vApellidos,
                 company: this.vCompany,
                 email: this.vEmail,
                 password: this.vPass,

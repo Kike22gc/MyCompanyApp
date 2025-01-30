@@ -20,6 +20,7 @@ const store = new Vuex.Store({
                 state.authentication = true;
                 state.user_id = response.data.id;
                 state.user_name = response.data.name;
+                state.user_subname = response.data.subname;
                 state.user_mail = response.data.email;
                 if (typeof callback == 'function') {
                     callback(true);
@@ -28,6 +29,7 @@ const store = new Vuex.Store({
                 state.authentication = false;
                 state.user_id = null;
                 state.user_name = null;
+                state.user_subname = null;
                 state.user_mail = null;
                 if (typeof callback == 'function') {
                     callback(false);
@@ -39,6 +41,7 @@ const store = new Vuex.Store({
             state.authentication = false;
             state.user_id = null;
             state.user_name = null;
+            state.user_subname = null;
             state.user_mail = null;
         },
     },
@@ -62,6 +65,9 @@ const store = new Vuex.Store({
         },
         getUserName(state) {
             return state.user_name;
+        },
+        getUserSubName(state) {
+            return state.user_subname;
         },
         getUserMail(state) {
             return state.user_mail;

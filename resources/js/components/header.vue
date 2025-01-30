@@ -19,12 +19,12 @@
                     
                     <template v-slot:prepend>
                         <v-list-item class="mt-4">
-                            <img src="https://randomuser.me/api/portraits/women/82.jpg">                    
+                            <img src="https://randomuser.me/api/portraits/women/64.jpg">                    
                         </v-list-item>
 
                         <v-list-item>
                         <v-list-item-content>
-                            <v-list-item-title><h1>{{vProfileName}}</h1></v-list-item-title>
+                            <v-list-item-title><h3>{{vProfileName}} {{ vProfileSubName }}</h3></v-list-item-title>
                         </v-list-item-content>
                         </v-list-item>
                     </template>
@@ -54,7 +54,6 @@
 
                 </v-navigation-drawer>
             </div>
-
             <div class="d-flex d-sm-none">
                 <v-app-bar >
                     <v-spacer></v-spacer>
@@ -70,12 +69,12 @@
                     
                     <template v-slot:prepend>
                         <v-list-item class="mt-4">
-                            <img src="https://randomuser.me/api/portraits/women/82.jpg">                    
+                            <img src="https://randomuser.me/api/portraits/women/64.jpg">                    
                         </v-list-item>
 
                         <v-list-item>
                         <v-list-item-content>
-                            <v-list-item-title><h1>{{vProfileName}}</h1></v-list-item-title>
+                            <v-list-item-title><h3>{{ vProfileName }} {{ vProfileSubName }}</h3></v-list-item-title>
                         </v-list-item-content>
                         </v-list-item>
                     </template>
@@ -109,6 +108,7 @@
 
         <Perfil
             v-bind:dialog="vShowProfile"
+            v-bind:profile="profile"
             @cancel="cancel"
         ></Perfil>
     </v-app>
@@ -126,7 +126,9 @@ export default {
             group: null,
 
             vProfileName: this.$store.getters.getUserName,
+            vProfileSubName: this.$store.getters.getUserSubName,
 
+            profile: null,
             vShowProfile: false,
 
             items: [
@@ -138,9 +140,15 @@ export default {
         };
     },
 
-    mounted() {},
+    created() {
+        this.initialize();
+    },
 
     methods: {
+
+        initialize : function() {
+            this.profile = this.$store.getters
+        },
 
         menuActionClick(action) {
             if (action === "home") {

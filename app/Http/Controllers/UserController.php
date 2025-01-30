@@ -30,7 +30,8 @@ class UserController extends BaseController
         $company = Company::where('company_name', $data['company'])->first();
 
         $user = User::create([
-            'name' => $data['username'],
+            'name' => $data['name'],
+            'subname' => $data['subname'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']), 
             'user_active' => 1,
