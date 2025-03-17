@@ -4,19 +4,14 @@
             <div class="d-none d-sm-flex">  <!--NAVBAR DESKTOP-->
                 <v-app-bar >
                     <v-btn x-large text @click="toHome()">Inicio</v-btn>
-                    
-                    
                     <v-spacer></v-spacer>
-
                     <v-app-bar-nav-icon
                         class="ml-5"
                         @click="drawer = true"
-                        v-if="this.$store.getters.isUserLogged"
                     ></v-app-bar-nav-icon>
                 </v-app-bar>
                 
                 <v-navigation-drawer v-model="drawer" absolute temporary right>
-                    
                     <template v-slot:prepend>
                         <v-list-item class="mt-4">
                             <img src="https://randomuser.me/api/portraits/women/64.jpg">                    
@@ -24,14 +19,13 @@
 
                         <v-list-item>
                         <v-list-item-content>
-                            <v-list-item-title><h3>{{vProfileName}} {{ vProfileSubName }}</h3></v-list-item-title>
+                            <v-list-item-title><h3>{{ userInfo.name }} {{ userInfo.subname }}</h3></v-list-item-title>
                         </v-list-item-content>
                         </v-list-item>
                     </template>
                     
                     <v-divider></v-divider><v-divider></v-divider>
                     <v-divider></v-divider><v-divider></v-divider>
-                    
                     <v-divider></v-divider><v-divider></v-divider>
                     <v-divider></v-divider><v-divider></v-divider>
 
@@ -61,7 +55,6 @@
                     <v-app-bar-nav-icon
                         class="ml-5"
                         @click="drawer = true"
-                        v-if="this.$store.getters.isUserLogged"
                     ></v-app-bar-nav-icon>
                 </v-app-bar>
                 
@@ -74,14 +67,13 @@
 
                         <v-list-item>
                         <v-list-item-content>
-                            <v-list-item-title><h3>{{ vProfileName }} {{ vProfileSubName }}</h3></v-list-item-title>
+                            <v-list-item-title><h3>{{ userInfo.name }} {{ userInfo.subname }}</h3></v-list-item-title>
                         </v-list-item-content>
                         </v-list-item>
                     </template>
                     
                     <v-divider></v-divider><v-divider></v-divider>
                     <v-divider></v-divider><v-divider></v-divider>
-                    
                     <v-divider></v-divider><v-divider></v-divider>
                     <v-divider></v-divider><v-divider></v-divider>
 
@@ -108,9 +100,10 @@
 
         <Perfil
             v-bind:dialog="vShowProfile"
-            v-bind:profile="profile"
+            v-bind:userInfo="userInfo"
             @cancel="cancel"
         ></Perfil>
+
     </v-app>
 </template>
 
@@ -118,17 +111,13 @@
 import axios from "axios";
 
 export default {
-    name: "Header",
 
     data() {
         return {
             drawer: false,
             group: null,
 
-            vProfileName: this.$store.getters.getUserName,
-            vProfileSubName: this.$store.getters.getUserSubName,
-
-            profile: null,
+            userInfo: [],
             vShowProfile: false,
 
             items: [
@@ -147,7 +136,14 @@ export default {
     methods: {
 
         initialize : function() {
-            this.profile = this.$store.getters
+            axios
+            .get("/api/user/data")
+            .then((response) => {
+                this.userInfo = response.data;
+            })
+            .catch((error) => {
+                alert("Error al acceder al perfil");
+            });
         },
 
         menuActionClick(action) {

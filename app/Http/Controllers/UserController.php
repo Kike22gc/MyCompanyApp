@@ -99,6 +99,9 @@ class UserController extends BaseController
     {
         $user = $request->user();
 
+        error_log('aaaa');
+        error_log($user);
+
         if ($user instanceof User) {
             $json = array_merge(
                 ['status' => 'OK'],

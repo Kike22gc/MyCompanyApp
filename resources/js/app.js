@@ -2,7 +2,7 @@ window.Vue = require('vue').default;
 
 import Vuetify from 'vuetify';
 import axios from 'axios';
-import Vuex from 'vuex';
+import Vuex, { Store } from 'vuex';
 import VueRouter from 'vue-router'
 import Vue from 'vue';
 import store from './store/store.js';
@@ -28,7 +28,7 @@ require('moment/locale/es');
  Vue.use(Vuex);
  Vue.use(VueRouter);
  Vue.use(Vuetify);
- Vue.use(VueMoment, {
+ Vue.use(VueMoment, Store, {
      moment
  });
  
@@ -50,9 +50,7 @@ require('moment/locale/es');
 
  const routes = [
      { path: '/', component: ("app").default },
-     { path: '/home', component: require("./components/views/home.vue").default},
-
-     
+     { path: '/home', component: require("./components/views/home.vue").default}, 
  ]
  
  const router = new VueRouter({

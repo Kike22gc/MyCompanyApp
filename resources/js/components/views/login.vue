@@ -149,6 +149,7 @@ export default {
                     });
                 })
                 .catch((error) => {
+                  console.log(error)
                     alert("Usuario y/o contraseña incorrectos");
                 });
         },

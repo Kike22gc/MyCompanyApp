@@ -6,14 +6,14 @@
                     <v-card>
                         <v-toolbar dense>
                             <img src="https://randomuser.me/api/portraits/women/64.jpg" width="40px" height="40px">
-                            <v-toolbar-title class="ml-4">{{ profile.getUserName }} {{ profile.getUserSubName }} </v-toolbar-title>
+                            <v-toolbar-title class="ml-4">{{userInfo.name}} {{userInfo.subname}}</v-toolbar-title>
                             
                             <v-spacer></v-spacer>
                             <v-icon>edit</v-icon>
                             <v-btn icon @click="cancel()" class="btn-close"><v-icon>mdi-close</v-icon></v-btn>
                         </v-toolbar>
 
-                        <div class="d-none d-sm-flex">
+                        <div class="d-none d-sm-flex"> <!--DESKTOP-->
                             <v-card-text>
                                 <v-row class="mt-4">
                                     <v-col cols="4">
@@ -35,12 +35,27 @@
                                             <v-spacer></v-spacer>
                                         </v-row>
                                     </v-col>
-                                    <v-col cols="2"></v-col>
-                                    <v-col cols="6"></v-col>
+                                    <v-col cols="1"></v-col>
+                                    <v-col cols="6">
+                                        <v-form v-model="vForm">
+                                            <v-text-field
+                                                :v-model="userInfo.name" name="userInfo.name"
+                                                :label="item.name"     type="text"
+                                                :prepend-icon="item.prependIcon"
+                                                >
+                                            </v-text-field>
+
+                                            <v-card-actions>
+                                            <v-spacer></v-spacer>
+                                            <v-btn color="primary">Registrarse </v-btn>
+                                            </v-card-actions>
+                                        </v-form>
+                                    </v-col>
+                                    <v-col cols="1"></v-col>
                                 </v-row>
                             </v-card-text>
                         </div>
-                        <div class="d-flex d-sm-none">
+                        <div class="d-flex d-sm-none">  <!--MOVIL-->
                             <v-card-text>
                                 <v-row class="mt-1">
                                     <v-card height="300px" width="100%">
@@ -68,7 +83,7 @@
                                     <v-btn v-if="image_url === null" class="primary" @click="seleccionaImagen()">SUBIR IMAGEN</v-btn>
                                     <v-btn v-if="image_url !== null" class="secondary" @click="borraImagen()">ELIMINAR IMAGEN</v-btn>
                                     <v-spacer></v-spacer>
-                                    </v-row>
+                                </v-row>
                             </v-card-text>
                         </div>
 
@@ -82,8 +97,7 @@
 <script>
 import axios from "axios";
 export default {
-    props: ["dialog", "profile"],
-    name: "NuevoJugador",
+    props: ["dialog", "userInfo"],
 
     data() {
         return {
@@ -95,28 +109,39 @@ export default {
             dateValue: null,
 
             vForm: false,
-            var_ruta_imagen: null,            
+            var_ruta_imagen: null, 
+
+            perfil: [],
+
+            items: [
+                { model: 'this.perfil.name',       name: 'Nombre',     label:'Nombre',     type: 'text',  prependIcon: 'person', },
+                { model: 'this.userInfo.subname',    name: 'Apellidos',  label:'Apellidos',  type: 'text',  prependIcon: 'person',  },
+              ],
         };
     },
 
     created() {
-      this.initialize();
+      
     },
 
     mounted: function() {
-        
+        this.initialize();
     },
 
     watch: {
         dateValue(newValue) {
             const arrayFecha = newValue.split("-");
             this.var_fecha = arrayFecha[2] + "/" + arrayFecha[1] + "/" + arrayFecha[0];
+        },
+
+        dialog(value){
+            if (value) this.perfil = this.userInfo
+            console.log(this.perfil)
         }
     },
 
     methods: {
         initialize: function () {
-            console.log(this.profile)
         }, 
 
         seleccionaImagen() {

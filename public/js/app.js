@@ -2211,10 +2211,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ["dialog", "profile"],
-  name: "NuevoJugador",
+  props: ["dialog", "userInfo"],
   data: function data() {
     return {
       image_url: null,
@@ -2223,23 +2237,39 @@ __webpack_require__.r(__webpack_exports__);
       dateMenu: false,
       dateValue: null,
       vForm: false,
-      var_ruta_imagen: null
+      var_ruta_imagen: null,
+      perfil: [],
+      items: [{
+        model: 'this.perfil.name',
+        name: 'Nombre',
+        label: 'Nombre',
+        type: 'text',
+        prependIcon: 'person'
+      }, {
+        model: 'this.userInfo.subname',
+        name: 'Apellidos',
+        label: 'Apellidos',
+        type: 'text',
+        prependIcon: 'person'
+      }]
     };
   },
-  created: function created() {
+  created: function created() {},
+  mounted: function mounted() {
     this.initialize();
   },
-  mounted: function mounted() {},
   watch: {
     dateValue: function dateValue(newValue) {
       var arrayFecha = newValue.split("-");
       this.var_fecha = arrayFecha[2] + "/" + arrayFecha[1] + "/" + arrayFecha[0];
+    },
+    dialog: function dialog(value) {
+      if (value) this.perfil = this.userInfo;
+      console.log(this.perfil);
     }
   },
   methods: {
-    initialize: function initialize() {
-      console.log(this.profile);
-    },
+    initialize: function initialize() {},
     seleccionaImagen: function seleccionaImagen() {
       this.$refs.file.$refs.input.click();
     },
@@ -2427,23 +2457,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  name: "Header",
   data: function data() {
     return {
       drawer: false,
       group: null,
-      vProfileName: this.$store.getters.getUserName,
-      vProfileSubName: this.$store.getters.getUserSubName,
-      profile: null,
+      userInfo: [],
       vShowProfile: false,
       items: [{
         title: 'Inicio',
@@ -2468,7 +2488,13 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     initialize: function initialize() {
-      this.profile = this.$store.getters;
+      var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/user/data").then(function (response) {
+        _this.userInfo = response.data;
+      })["catch"](function (error) {
+        alert("Error al acceder al perfil");
+      });
     },
     menuActionClick: function menuActionClick(action) {
       if (action === "home") {
@@ -25193,10 +25219,9 @@ var render = function () {
                       _vm._v(" "),
                       _c("v-toolbar-title", { staticClass: "ml-4" }, [
                         _vm._v(
-                          _vm._s(_vm.profile.getUserName) +
+                          _vm._s(_vm.userInfo.name) +
                             " " +
-                            _vm._s(_vm.profile.getUserSubName) +
-                            " "
+                            _vm._s(_vm.userInfo.subname)
                         ),
                       ]),
                       _vm._v(" "),
@@ -25334,9 +25359,55 @@ var render = function () {
                                 1
                               ),
                               _vm._v(" "),
-                              _c("v-col", { attrs: { cols: "2" } }),
+                              _c("v-col", { attrs: { cols: "1" } }),
                               _vm._v(" "),
-                              _c("v-col", { attrs: { cols: "6" } }),
+                              _c(
+                                "v-col",
+                                { attrs: { cols: "6" } },
+                                [
+                                  _c(
+                                    "v-form",
+                                    {
+                                      model: {
+                                        value: _vm.vForm,
+                                        callback: function ($$v) {
+                                          _vm.vForm = $$v
+                                        },
+                                        expression: "vForm",
+                                      },
+                                    },
+                                    [
+                                      _c("v-text-field", {
+                                        attrs: {
+                                          "v-model": _vm.userInfo.name,
+                                          name: "userInfo.name",
+                                          label: _vm.item.name,
+                                          type: "text",
+                                          "prepend-icon": _vm.item.prependIcon,
+                                        },
+                                      }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-card-actions",
+                                        [
+                                          _c("v-spacer"),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-btn",
+                                            { attrs: { color: "primary" } },
+                                            [_vm._v("Registrarse ")]
+                                          ),
+                                        ],
+                                        1
+                                      ),
+                                    ],
+                                    1
+                                  ),
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c("v-col", { attrs: { cols: "1" } }),
                             ],
                             1
                           ),
@@ -25515,16 +25586,14 @@ var render = function () {
                 _vm._v(" "),
                 _c("v-spacer"),
                 _vm._v(" "),
-                this.$store.getters.isUserLogged
-                  ? _c("v-app-bar-nav-icon", {
-                      staticClass: "ml-5",
-                      on: {
-                        click: function ($event) {
-                          _vm.drawer = true
-                        },
-                      },
-                    })
-                  : _vm._e(),
+                _c("v-app-bar-nav-icon", {
+                  staticClass: "ml-5",
+                  on: {
+                    click: function ($event) {
+                      _vm.drawer = true
+                    },
+                  },
+                }),
               ],
               1
             ),
@@ -25555,9 +25624,9 @@ var render = function () {
                                 _c("v-list-item-title", [
                                   _c("h3", [
                                     _vm._v(
-                                      _vm._s(_vm.vProfileName) +
+                                      _vm._s(_vm.userInfo.name) +
                                         " " +
-                                        _vm._s(_vm.vProfileSubName)
+                                        _vm._s(_vm.userInfo.subname)
                                     ),
                                   ]),
                                 ]),
@@ -25646,16 +25715,14 @@ var render = function () {
               [
                 _c("v-spacer"),
                 _vm._v(" "),
-                this.$store.getters.isUserLogged
-                  ? _c("v-app-bar-nav-icon", {
-                      staticClass: "ml-5",
-                      on: {
-                        click: function ($event) {
-                          _vm.drawer = true
-                        },
-                      },
-                    })
-                  : _vm._e(),
+                _c("v-app-bar-nav-icon", {
+                  staticClass: "ml-5",
+                  on: {
+                    click: function ($event) {
+                      _vm.drawer = true
+                    },
+                  },
+                }),
               ],
               1
             ),
@@ -25686,9 +25753,9 @@ var render = function () {
                                 _c("v-list-item-title", [
                                   _c("h3", [
                                     _vm._v(
-                                      _vm._s(_vm.vProfileName) +
+                                      _vm._s(_vm.userInfo.name) +
                                         " " +
-                                        _vm._s(_vm.vProfileSubName)
+                                        _vm._s(_vm.userInfo.subname)
                                     ),
                                   ]),
                                 ]),
@@ -25770,7 +25837,7 @@ var render = function () {
       ]),
       _vm._v(" "),
       _c("Perfil", {
-        attrs: { dialog: _vm.vShowProfile, profile: _vm.profile },
+        attrs: { dialog: _vm.vShowProfile, userInfo: _vm.userInfo },
         on: { cancel: _vm.cancel },
       }),
     ],
